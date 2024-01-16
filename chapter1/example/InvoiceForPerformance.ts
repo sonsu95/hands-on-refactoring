@@ -1,14 +1,18 @@
-import {Invoice, Performance, Play, Plays} from '../types';
+import { Invoice, Performance, Play, Plays, StatementData } from '../types';
 
 export function statement(invoice: Invoice, plays: Plays) {
+  const statementData: StatementData = {
+    customer: invoice.customer,
+    performances: invoice.performances,
+  };
 
-  return renderPlainText(invoice, plays)
+  return renderPlainText(statementData, plays);
 }
 
-export function renderPlainText(invoice: Invoice, plays: Plays | {}) {
+export function renderPlainText(statement: StatementData, plays: Plays | {}) {
   function totalAmount(): number {
     let result = 0;
-    for (let perf of invoice.performances) {
+    for (let perf of statement.performances) {
       result += amountFor(perf);
     }
     return result;
@@ -16,7 +20,7 @@ export function renderPlainText(invoice: Invoice, plays: Plays | {}) {
 
   function totalVolumeCredits() {
     let result = 0;
-    for (let perf of invoice.performances) {
+    for (let perf of statement.performances) {
       result += volumeCreditsFor(perf);
     }
     return result;
@@ -62,8 +66,8 @@ export function renderPlainText(invoice: Invoice, plays: Plays | {}) {
     return result;
   }
 
-  let result = `청구 내역 (고객명: ${invoice.customer}\n`;
-  for (let perf of invoice.performances) {
+  let result = `청구 내역 (고객명: ${statement.customer}\n`;
+  for (let perf of statement.performances) {
     result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`;
   }
   result += `총액: ${usd(totalAmount())}\n`;
