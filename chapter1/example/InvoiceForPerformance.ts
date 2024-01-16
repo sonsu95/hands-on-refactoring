@@ -1,6 +1,11 @@
-import type { Performance, Invoice, Plays, Play } from '../types';
+import {Invoice, Performance, Play, Plays} from '../types';
 
-export function statement(invoice: Invoice, plays: Plays | {}) {
+export function statement(invoice: Invoice, plays: Plays) {
+
+  return renderPlainText(invoice, plays)
+}
+
+export function renderPlainText(invoice: Invoice, plays: Plays | {}) {
   function totalAmount(): number {
     let result = 0;
     for (let perf of invoice.performances) {
